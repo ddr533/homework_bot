@@ -66,7 +66,7 @@ def send_message(bot: telegram.Bot, message: str) -> None:
         logging.error(f'Ошибка отправки сообщения {e}')
 
 
-def get_api_answer(timestamp: float) -> dict:
+def get_api_answer(timestamp: int) -> dict:
     """Делает запрос к эндпоинту API-сервиса."""
     try:
         response = requests.get(
@@ -116,7 +116,7 @@ def main():
     current_hw_status = {}
     check_tokens()
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
-    timestamp = time.time()
+    timestamp = int(time.time())
 
     while True:
         new_updates = 0
