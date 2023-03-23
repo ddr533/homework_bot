@@ -10,14 +10,6 @@ from dotenv import load_dotenv
 from exceptions import (ApiNotAllow, DataError, NoneHwName, StatusCodeError,
                         StrangeStatus, TokenError)
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s, %(levelname)s, %(message)s'
-)
-
-logger = logging.getLogger(__name__)
-handler = logging.StreamHandler(sys.stdout)
-logger.addHandler(handler)
 
 load_dotenv()
 
@@ -35,8 +27,6 @@ HOMEWORK_VERDICTS = {
     'rejected': 'Работа проверена: у ревьюера есть замечания.'
 }
 
-ERROR_LIST = []
-
 
 def check_error_list(bot: telegram.Bot, error: str) -> None:
     """
@@ -52,7 +42,7 @@ def check_error_list(bot: telegram.Bot, error: str) -> None:
 def check_tokens():
     """Проверяет доступность переменных окружения."""
     vars = (PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID)
-    if not all((var is not None and type(var) == str) for var in vars):
+    if not all(vars):
         logging.critical('Токены отсутствуют или имеют не верный тип')
         raise TokenError()
 
@@ -87,10 +77,10 @@ def get_api_answer(timestamp: int) -> dict:
 
 def check_response(response: dict) -> None:
     """Проверяет ответ API на соответствие документации."""
-    expected_keys = ('homeworks', 'current_date')
+    expected_key = 'homeworks'
     if type(response) != dict:
         raise TypeError('Неверный тип данных в ответе на запрос')
-    if not all(key in response for key in expected_keys):
+    if expected_key not in response:
         raise DataError('В ответе API нет нужных данных')
     if not type(response['homeworks']) == list:
         raise TypeError('Неверный тип данных по ключу "homeworks"')
@@ -133,19 +123,8 @@ def main():
                     send_message(bot, resp_message)
                     new_updates += 1
 
-        except DataError as e:
-            check_error_list(bot, str(e))
-
-        except StrangeStatus as e:
-            check_error_list(bot, str(e))
-
-        except NoneHwName as e:
-            check_error_list(bot, str(e))
-
-        except TypeError as e:
-            check_error_list(bot, str(e))
-
         except Exception as e:
+            check_error_list(bot, str(e))
             logging.error(f'Сбой в работе программы: {e}')
 
         finally:
@@ -155,4 +134,13 @@ def main():
 
 
 if __name__ == '__main__':
+    ERROR_LIST = []
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s, %(levelname)s, %(message)s'
+    )
+
+    logger = logging.getLogger(__name__)
+    handler = logging.StreamHandler(sys.stdout)
+    logger.addHandler(handler)
     main()
