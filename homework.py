@@ -26,8 +26,6 @@ HOMEWORK_VERDICTS = {
     'rejected': 'Работа проверена: у ревьюера есть замечания.'
 }
 
-ERROR_LIST = []
-
 
 def check_error_list(bot: telegram.Bot, error: Exception) -> None:
     """
@@ -139,6 +137,7 @@ def main():
 
 
 if __name__ == '__main__':
+    ERROR_LIST = []
 
     logging.basicConfig(
         level=logging.DEBUG,
