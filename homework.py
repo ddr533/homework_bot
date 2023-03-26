@@ -10,6 +10,24 @@ from dotenv import load_dotenv
 from exceptions import (ApiNotAllow, DataError, NoneHwName, StatusCodeError,
                         StrangeStatus, TokenError)
 
+load_dotenv()
+
+PRACTICUM_TOKEN = os.getenv('prac_token')
+TELEGRAM_TOKEN = os.getenv('token')
+TELEGRAM_CHAT_ID = os.getenv('chat_id')
+
+RETRY_PERIOD = 600
+ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
+HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
+
+HOMEWORK_VERDICTS = {
+    'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!',
+    'reviewing': 'Работа взята на проверку ревьюером.',
+    'rejected': 'Работа проверена: у ревьюера есть замечания.'
+}
+
+ERROR_LIST = []
+
 
 def check_error_list(bot: telegram.Bot, error: Exception) -> None:
     """
@@ -18,7 +36,8 @@ def check_error_list(bot: telegram.Bot, error: Exception) -> None:
     Отправляет сообщение об ошибки в чат бота, если ошибки не было в списке.
     Логирует все типы ошибок.
     """
-    #Типы ошибок, при которых следует единыжды отправлять сообщение в чат бота.
+    #Типы ошибок, о которых следует единыжды отправлять сообщение в чат бота.
+    global ERROR_LIST
     e_types_for_chat = (DataError, NoneHwName, TypeError, StrangeStatus)
     if type(error) in e_types_for_chat and str(error) not in ERROR_LIST:
         ERROR_LIST.append(str(error))
@@ -120,23 +139,6 @@ def main():
 
 
 if __name__ == '__main__':
-    load_dotenv()
-
-    PRACTICUM_TOKEN = os.getenv('prac_token')
-    TELEGRAM_TOKEN = os.getenv('token')
-    TELEGRAM_CHAT_ID = os.getenv('chat_id')
-
-    RETRY_PERIOD = 600
-    ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
-    HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
-
-    HOMEWORK_VERDICTS = {
-        'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!',
-        'reviewing': 'Работа взята на проверку ревьюером.',
-        'rejected': 'Работа проверена: у ревьюера есть замечания.'
-    }
-
-    ERROR_LIST = []
 
     logging.basicConfig(
         level=logging.DEBUG,
