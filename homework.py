@@ -43,7 +43,7 @@ def check_error_list(bot: telegram.Bot, error: Exception) -> None:
     logging.error(f'Сбой в работе программы: {error}')
 
 
-def check_tokens():
+def check_tokens() -> None:
     """Проверяет доступность переменных окружения."""
     vars = (PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID)
     if not all(vars):
@@ -79,7 +79,7 @@ def get_api_answer(timestamp: int) -> dict:
 
 def check_response(response: dict) -> None:
     """Проверяет ответ API на соответствие документации."""
-    expected_key = 'homeworks'
+    expected_key: str = 'homeworks'
     if type(response) != dict:
         raise TypeError('Неверный тип данных в ответе на запрос')
     if expected_key not in response:
@@ -100,7 +100,7 @@ def parse_status(homework: dict) -> str:
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
 
 
-def main():
+def main() -> None:
     """
     Делает запрос к API домашних работ.
     При наличии обновлений или ошибок отправляет сообщение о событии в чат.
