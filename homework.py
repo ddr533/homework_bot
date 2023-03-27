@@ -34,7 +34,7 @@ def check_error_list(bot: telegram.Bot, error: Exception) -> None:
     Отправляет сообщение об ошибки в чат бота, если ошибки не было в списке.
     Логирует все типы ошибок.
     """
-    #Типы ошибок, о которых следует единыжды отправлять сообщение в чат бота.
+    #Типы ошибок, о которых следует единажды отправлять сообщение в чат бота.
     global ERROR_LIST
     e_types_for_chat = (DataError, NoneHwName, TypeError, StrangeStatus)
     if type(error) in e_types_for_chat and str(error) not in ERROR_LIST:
@@ -67,11 +67,9 @@ def get_api_answer(timestamp: int) -> dict:
             ENDPOINT, headers=HEADERS,
             params={'from_date': timestamp}
         )
-
     except Exception as e:
         logging.error(f'Ошибка запроса к API {e}')
         raise ApiNotAllow()
-
     else:
         if response.status_code != 200:
             logging.error(f'Статус-код ответа: {response.status_code}')
@@ -86,7 +84,7 @@ def check_response(response: dict) -> None:
         raise TypeError('Неверный тип данных в ответе на запрос')
     if expected_key not in response:
         raise DataError('В ответе API нет нужных данных')
-    if not type(response['homeworks']) == list:
+    if type(response['homeworks']) != list:
         raise TypeError('Неверный тип данных по ключу "homeworks"')
 
 
@@ -126,10 +124,8 @@ def main():
                     current_hw_status[hw_id] = resp_message
                     send_message(bot, resp_message)
                     new_updates += 1
-
         except Exception as e:
             check_error_list(bot, e)
-
         finally:
             if not new_updates:
                 logging.debug('Нет новых обновлений')
