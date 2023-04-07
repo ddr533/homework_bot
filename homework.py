@@ -10,6 +10,12 @@ from dotenv import load_dotenv
 from exceptions import (ApiNotAllow, DataError, NoneHwName, StatusCodeError,
                         StrangeStatus, TokenError)
 
+
+logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s, %(levelname)s, %(message)s'
+    )
+
 load_dotenv()
 
 PRACTICUM_TOKEN = os.getenv('prac_token')
@@ -134,11 +140,6 @@ def main() -> None:
 
 if __name__ == '__main__':
     ERROR_LIST = []
-
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(asctime)s, %(levelname)s, %(message)s'
-    )
 
     logger = logging.getLogger(__name__)
     handler = logging.StreamHandler(sys.stdout)
