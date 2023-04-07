@@ -143,5 +143,8 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
     handler = logging.StreamHandler(sys.stdout)
     logger.addHandler(handler)
-
-    main()
+    try:
+      main()
+    except Keyboardinterrupt:
+      logging.info(f'Принудительная остановка бота')
+      
